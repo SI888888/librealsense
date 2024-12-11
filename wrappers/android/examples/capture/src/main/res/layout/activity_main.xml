@@ -11,6 +11,16 @@
         android:layout_height="match_parent"
         android:id="@+id/glSurfaceView"/>
 
+    <!--    new added 1210-->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone" />
+<!--    new added 1210-->
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/buttonPanel"
         android:layout_width="wrap_content"
@@ -27,6 +37,8 @@
             android:textSize="20dp"
             android:text="Connect a RealSense camera"
             android:textColor="#ffffff"/>
+
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
