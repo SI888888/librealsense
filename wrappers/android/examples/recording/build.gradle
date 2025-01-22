@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'de.undercouch.download'// 0122
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -20,7 +22,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {// 0122
+        sourceCompatibility JavaVersion.VERSION_17// 0122
+        targetCompatibility JavaVersion.VERSION_17// 0122
+    }// 0122
+    kotlinOptions {
+        jvmTarget = '17'// 0122
+    }
 }
+
+// import DownloadMPTasks task
+project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'// 0122
+apply from: 'download_tasks.gradle'// 0122
 
 dependencies {
     implementation project(':librealsense')
@@ -28,7 +41,9 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
     implementation "com.google.android.material:material:$materialVersion"
+    implementation 'androidx.core:core-ktx:1.15.0'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidextjunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
+    implementation 'com.google.mediapipe:tasks-vision:0.10.14'
 }

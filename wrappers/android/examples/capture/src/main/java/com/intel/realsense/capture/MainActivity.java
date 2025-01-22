@@ -3,10 +3,6 @@ package com.intel.realsense.capture;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.core.app.ActivityCompat;
@@ -16,17 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.renderscript.Float3;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.mediapipe.framework.image.BitmapImageBuilder;
-import com.google.mediapipe.framework.image.MPImage;
-//import com.google.mediapipe.framework.image.BitmapImageBuilder;
-import com.google.mediapipe.tasks.components.containers.NormalizedLandmark;
-import com.google.mediapipe.tasks.core.BaseOptions;
-import com.google.mediapipe.tasks.vision.core.RunningMode;
-import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker;
-import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
 import com.intel.realsense.librealsense.Colorizer;
 import com.intel.realsense.librealsense.Config;
 import com.intel.realsense.librealsense.DeviceList;
@@ -41,10 +28,6 @@ import com.intel.realsense.librealsense.PipelineProfile;
 import com.intel.realsense.librealsense.RsContext;
 import com.intel.realsense.librealsense.StreamFormat;
 import com.intel.realsense.librealsense.StreamType;
-import com.intel.realsense.librealsense.VideoFrame;
-
-import java.nio.ByteBuffer;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "librs capture example";
@@ -61,27 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private Pipeline mPipeline;
     private Colorizer mColorizer;
     private RsContext mRsContext;
-    private PoseLandmarker poseLandmarker; // new added 1210
-
-    private void initializePoseLandmarker() { // new added 1210
-        String modelPath = "pose_landmarker_lite.task";
-        BaseOptions baseOptions = BaseOptions.builder()
-                .setModelAssetPath(modelPath)
-                .build();
-
-        PoseLandmarker.PoseLandmarkerOptions options = PoseLandmarker.PoseLandmarkerOptions.builder()
-                .setBaseOptions(baseOptions)
-                .setRunningMode(RunningMode.IMAGE) // 或者 RunningMode.LIVE_STREAM 视具体需求
-                .build();
-
-        poseLandmarker = PoseLandmarker.createFromOptions(this, options);
-    } // new added 1210
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializePoseLandmarker();// new added 1210
         mAppContext = getApplicationContext();
         mBackGroundText = findViewById(R.id.connectCameraText);
         mGLSurfaceView = findViewById(R.id.glSurfaceView);
@@ -207,58 +174,7 @@ public class MainActivity extends AppCompatActivity {
         }
     } //1210
 
-    private Bitmap drawPoseOnBitmap(Bitmap bitmap, PoseLandmarkerResult result) {//new added 1210
-        Bitmap outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(outputBitmap);
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(5);
 
-        // 遍历所有检测到的姿势
-        for (List<NormalizedLandmark> poseLandmarks : result.landmarks()) {
-            for (NormalizedLandmark landmark : poseLandmarks) {
-                float x = landmark.x() * bitmap.getWidth();
-                float y = landmark.y() * bitmap.getHeight();
-                canvas.drawCircle(x, y, 8, paint); // 在每个地标点绘制一个圆点
-            }
-        }
-
-        return outputBitmap;
-    }//new added 1210
-
-    private Bitmap convertFrameToBitmap(Frame colorFrame) {//new added 1210
-        if (!colorFrame.is(Extension.VIDEO_FRAME)) {
-            throw new IllegalArgumentException("Provided frame is not a video frame");
-        }
-
-        // 将 Frame 转换为 VideoFrame
-        VideoFrame videoFrame = colorFrame.as(Extension.VIDEO_FRAME);
-
-        // 获取宽度和高度
-        int width = videoFrame.getWidth();
-        int height = videoFrame.getHeight();
-
-        // 获取帧数据（byte[]）
-        byte[] data = new byte[width * height * 3]; // 假设是 RGB 格式
-        videoFrame.getData(data);
-
-        // 创建 Bitmap
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        // 将 byte[] 数据转换为 IntArray
-        int[] pixels = new int[width * height];
-        for (int i = 0; i < pixels.length; i++) {
-            int r = data[i * 3] & 0xFF;
-            int g = data[i * 3 + 1] & 0xFF;
-            int b = data[i * 3 + 2] & 0xFF;
-            pixels[i] = 0xFF000000 | (r << 16) | (g << 8) | b;
-        }
-
-        // 将像素填充到 Bitmap
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-
-        return bitmap;
-    }//new added 1210
 
     Runnable mStreaming = new Runnable() {
         @Override
@@ -269,22 +185,7 @@ public class MainActivity extends AppCompatActivity {
                         mGLSurfaceView.upload(processed);
                     }
                     Frame colorFrame = frames.first(StreamType.COLOR);
-                    if (colorFrame != null) { //new added 1210
-                        Bitmap rgbBitmap = convertFrameToBitmap(colorFrame);
 
-                        // 使用 MediaPipe Pose Landmarker 处理
-                        MPImage mpImage = new BitmapImageBuilder(rgbBitmap).build();
-                        PoseLandmarkerResult result = poseLandmarker.detect(mpImage);
-
-                        // 将骨架粘贴到原始图像
-                        Bitmap outputBitmap = drawPoseOnBitmap(rgbBitmap, result);
-
-                        // 更新 UI
-                        runOnUiThread(() -> {
-                            ImageView imageView = findViewById(R.id.imageView); // 替换 GLRsSurfaceView 为 ImageView
-                            imageView.setImageBitmap(outputBitmap); // 设置处理后的 Bitmap
-                        });
-                    }//new added 1210
                     try (Frame gyroFrame = frames.first(StreamType.GYRO)) {
                         if (gyroFrame != null && gyroFrame.is(Extension.MOTION_FRAME)) {
                             MotionFrame motion = gyroFrame.as(Extension.MOTION_FRAME);

@@ -12,6 +12,13 @@
         android:layout_height="match_parent"
         android:id="@+id/glSurfaceView"/>
 
+    <com.intel.realsense.capture.OverlayView
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.5"
+        android:scaleY="0.5" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/buttonPanel"
         android:layout_width="wrap_content"
@@ -53,4 +60,16 @@
         android:backgroundTint="#000000"
         android:visibility="gone"
         app:srcCompat="@android:drawable/ic_media_pause" />
+    <!-- 返回按钮 -->
+    <!-- //new added 0113-->
+    <Button
+        android:id="@+id/btn_return_camtoclip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Return"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:background="#ffffff"
+        android:textColor="#000000" />
 </RelativeLayout>

@@ -1,0 +1,99 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 快速录制按钮 -->
+    <Button
+        android:id="@+id/btn_quick_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quick Record"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Job List"
+        android:textSize="24sp"
+        android:padding="16dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="#EEEEEE"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_quick_record"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Job 列表 -->
+    <ListView
+        android:id="@+id/job_list_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toTopOf="@id/add_job_fab"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 添加 Job 按钮 -->
+    <Button
+        android:id="@+id/add_job_fab"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_job"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:background="@drawable/rect_button"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:orientation="vertical"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+<!--    &lt;!&ndash; 标题 &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center"-->
+<!--        android:text="Job List"-->
+<!--        android:textSize="24sp"-->
+<!--        android:padding="16dp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:background="#EEEEEE" />-->
+
+<!--    &lt;!&ndash; Job 列表 &ndash;&gt;-->
+<!--    <ListView-->
+<!--        android:id="@+id/job_list_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:divider="@android:color/darker_gray"-->
+<!--        android:dividerHeight="1dp"-->
+<!--        android:padding="8dp" />-->
+
+<!--    &lt;!&ndash; 添加 Job 的浮动按钮 &ndash;&gt;-->
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/add_job_fab"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="end|bottom"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:contentDescription="Add Job"-->
+<!--        app:srcCompat="@drawable/ic_android_black_24dp"-->
+<!--        app:backgroundTint="@color/purple_200" />-->
+<!--</LinearLayout>-->
